@@ -1,15 +1,23 @@
 import { Injectable, Request } from '@nestjs/common';
-import { GenerateTokenIzipayApiDto, ValidateAccount } from './dto/create-izipay.dto';
+import { GenerateTokenIzipayApiDto, SaveTokenWithuser, ValidateAccount } from './dto/create-izipay.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import axios from 'axios';
 import { axiosErrorHandler } from 'src/common/utils/http-resp.utils';
+import { LoginIzipay } from './entities/izipay.entity';
 
 @Injectable()
 export class IzipayService {
     private readonly baseUrl = process.env.IZI_URL_TEST;
 
+    constructor(
+        @InjectRepository(LoginIzipay)
+        private readonly loginIzipayRepository: Repository<LoginIzipay>,
+      ) {}
+
     async tokenGenerate(GenerateToken: GenerateTokenIzipayApiDto, { email }: { email: string }) {
 
-        const headers  = {
+        const headers = {
             'Content-type': 'application/json',
             'transactionId': GenerateToken.transactionId,
         };
@@ -23,8 +31,31 @@ export class IzipayService {
         }
 
         const axiosPromise = axios.post(`${this.baseUrl}/security/v1/Token/Generate`, data, { headers });
+        const resp = await axiosErrorHandler(axiosPromise);
 
-        return await axiosErrorHandler(axiosPromise);
+        /* Logica para guardar el token generado por IziPay para manterlo con el usuario */
+        if (resp) {
+            const SaveTokenWithuser = {
+                transactionId: GenerateToken.transactionId,
+                merchantCode: GenerateToken.merchantCode,
+                userEmail: email,
+                token: resp.response.token
+            }
+            await this.saveTokenWithUser(SaveTokenWithuser);
+        }
+
+        return resp;
+    }
+
+    async saveTokenWithUser(SaveTokenWithuser: SaveTokenWithuser) {
+        const userEmail = SaveTokenWithuser.userEmail;
+        const find = await this.loginIzipayRepository.findOneBy({ userEmail })
+        console.log(find);
+
+        if (!find)
+            return this.loginIzipayRepository.save(SaveTokenWithuser);
+
+        return true;
     }
 
     async validateAccount(ValidateAccount: ValidateAccount) {

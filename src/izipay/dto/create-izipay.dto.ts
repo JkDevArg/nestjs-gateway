@@ -1,7 +1,7 @@
 import { Optional } from "@nestjs/common";
 import { IsString, MaxLength, MinLength } from "class-validator";
 
-/* 
+/*
     Dto para crear el token consumiendo la api de IZIPAY
 */
 export class GenerateTokenIzipayApiDto {
@@ -27,6 +27,22 @@ export class GenerateTokenIzipayApiDto {
 
     @IsString()
     amount: string;
+}
+
+export class SaveTokenWithuser {
+    @IsString()
+    @MinLength(1)
+    transactionId: string;
+
+    @IsString()
+    @MinLength(1)
+    merchantCode: string;
+
+    @IsString()
+    userEmail: string;
+
+    @IsString()
+    token: string;
 }
 
 export class ValidateAccount {

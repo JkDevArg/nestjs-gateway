@@ -3,7 +3,7 @@ import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne } from "typeorm
 
 
 @Entity()
-export class Izipay {
+export class LoginIzipay {
     @Column({ primary: true, generated: true })
     id: number;
 
@@ -11,19 +11,10 @@ export class Izipay {
     transactionId: string;
 
     @Column()
-    requestSource: string;
-
-    @Column()
     merchantCode: string;
 
     @Column()
-    orderNumber: string;
-
-    @Column()
-    amount: string;
-
-    @DeleteDateColumn()
-    deletedAt: Date;
+    token: string;
 
     @ManyToOne(() => User)
     @JoinColumn({ name: 'userEmail', referencedColumnName: 'email',  })
@@ -31,4 +22,7 @@ export class Izipay {
 
     @Column()
     userEmail: string;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 }
