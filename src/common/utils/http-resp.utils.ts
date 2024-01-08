@@ -9,6 +9,7 @@ export async function axiosErrorHandler<T>(
         return response.data;
     } catch (error) {
         if (error.response) {
+            console.log(error.response);
             const { status, data } = error.response;
             throw new HttpException(data, status);
         } else if (error.request) {

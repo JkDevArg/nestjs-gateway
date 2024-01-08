@@ -58,19 +58,19 @@ export class AuthService {
       },
       backendTokens: {
         accessToken: await this.jwtService.signAsync(payload, {
-          expiresIn: '20s',
+          expiresIn: process.env.EXPIRE_REFRESH_TOKEN,
           secret: process.env.SECRET_TOKEN_KEY,
         }),
-        refreshToken: await this.jwtService.signAsync(payload, {
-          expiresIn: '1h',
+        /* refreshToken: await this.jwtService.signAsync(payload, {
+          expiresIn: process.env.EXPIRE_TOKEN,
           secret: process.env.REFRESH_TOKEN_KEY,
-        }),
+        }), */
         expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
       },
     };
   }
 
-  
+
   async refreshToken(email: any){
 
     const user = await this.usersService.findByEmailWithPassword(email);
@@ -79,12 +79,12 @@ export class AuthService {
 
     return {
       accessToken: await this.jwtService.signAsync(payload, {
-        expiresIn: '20s',
+        expiresIn: process.env.EXPIRE_REFRESH_TOKEN,
         secret: process.env.SECRET_TOKEN_KEY,
       }),
 
       refreshToken: await this.jwtService.signAsync(payload, {
-        expiresIn: '1h',
+        expiresIn: process.env.EXPIRE_TOKEN,
         secret: process.env.REFRESH_TOKEN_KEY,
       }),
 
@@ -92,7 +92,7 @@ export class AuthService {
     }
   }
 
-  async profile({ email, role }: { email: string; role: string }) {
+  async profile({ email }: { email: string }) {
     return await this.usersService.findOneByEmail(email);
   }
 }

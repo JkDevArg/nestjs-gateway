@@ -10,7 +10,7 @@ import { AuthService } from './auth.service';
     JwtModule.register({
       global: true,
       secret: process.env.SECRET_TOKEN_KEY,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: process.env.EXPIRE_TOKEN },
     }),
   ],
   controllers: [AuthController],

@@ -7,13 +7,9 @@ import { Auth } from './decorators/auth.decorator';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshJwtGuard } from './guard/refresh.guard';
+import { RequestWithUser } from './interface/req.interface';
 
-interface RequestWithUser extends Request {
-  user: {
-    email: string;
-    role: string;
-  };
-}
+
 
 @Controller('auth')
 export class AuthController {
@@ -28,17 +24,8 @@ export class AuthController {
   }
 
   @Post('login')
-  login(
-    @Body()
-    loginDto: LoginDto,
-  ) {
+  login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
-  }
-
-  @Get('profile')
-  @Auth(Role.USER)
-  profile(@ActiveUser() user: UserActiveInterface) {
-    return this.authService.profile(user);
   }
 
   @UseGuards(RefreshJwtGuard)
@@ -46,5 +33,13 @@ export class AuthController {
   async refreshToken(@Request() req) {
     /* console.log('refreshed'); */
     return await this.authService.refreshToken(req.body.email);
+  }
+
+  @Get('profile')
+  @Auth(Role.USER)
+  profile(@Request() req: RequestWithUser) {
+    // Obtenemos información del usuario logeado
+    const email = req.user.email;
+    return this.authService.profile({ email });
   }
 }
