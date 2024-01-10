@@ -13,3 +13,15 @@ services:
       - ./mysql:/var/lib/mysql
     ports:
       - "3309:3306"
+
+  redis:
+    container_name: redis
+    image: redis
+    ports:
+      - 6380:6379
+    volumes:
+      - redis:/data
+
+volumes:
+  redis:
+    driver: local
