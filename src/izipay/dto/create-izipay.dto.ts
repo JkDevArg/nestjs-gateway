@@ -1,5 +1,5 @@
 import { Optional } from "@nestjs/common";
-import { IsBoolean, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import { IsBoolean, IsDate, IsIn, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 /*
     Dto para crear el token consumiendo la api de IZIPAY
@@ -19,6 +19,7 @@ export class GenerateTokenIzipayApiDto {
 
     @IsString()
     @MinLength(1)
+    @IsOptional()
     orderNumber: string;
 
     @IsString()
@@ -494,4 +495,193 @@ export class GetTokenInfoDto {
     @MinLength(64)
     @MaxLength(64)
     buyerToken: string;
+}
+
+export class GenerateLinkPayment{
+    @IsString()
+    transactionId: string;
+
+    @IsString()
+    @MinLength(1)
+    @MaxLength(16)
+    merchantCode: string;
+
+    @IsString()
+    @MinLength(1)
+    @MaxLength(100)
+    productDescription: string;
+
+    @IsString()
+    @MinLength(4)
+    @MaxLength(13)
+    amount: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(3)
+    currency: string;
+
+    @IsDate()
+    expirationDate: string;
+
+    @IsString()
+    @IsIn(['INDIVIDUAL', 'GENERAL'], {
+        message: 'wayOfUse must be either INDIVIDUAL or GENERAL',
+    })
+    wayOfUse: string;
+
+    @IsString()
+    @MinLength(1)
+    @MaxLength(60)
+    email_Notification: string;
+
+    @IsString()
+    @MinLength(2)
+    @MaxLength(60)
+    @IsIn(['CARD', 'QR', 'APPLE_PAY', 'MILLAS', 'YAPE_CODE'], {
+        message: 'payMethod must be either CARD or QR or APPLE_PAY or MILLAS or YAPE_CODE',
+    })
+    payMethod: string;
+
+    @IsString()
+    @MinLength(1)
+    @MaxLength(64)
+    referenceCode: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(3)
+    @IsIn(['ESP', 'ENG'], {
+        message: 'languageUsed must be either ESP or ENG',
+    })
+    languageUsed: string;
+
+    @IsString()
+    @MinLength(8)
+    @MaxLength(255)
+    urL_Terms_and_Conditions: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(50)
+    firstNameBilling: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(50)
+    lastNameBilling: string;
+
+    @IsString()
+    @MinLength(6)
+    @MaxLength(50)
+    emailBilling: string;
+
+    @IsString()
+    @MinLength(7)
+    @MaxLength(16)
+    phoneNumberBilling: string;
+
+    @IsString()
+    @MinLength(5)
+    @MaxLength(40)
+    streetBilling: string;
+
+    @IsString()
+    @MinLength(5)
+    @MaxLength(10)
+    postalCodeBilling: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(40)
+    cityBilling: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(40)
+    stateBilling: string;
+
+    @IsString()
+    @MinLength(2)
+    @MaxLength(2)
+    countryBilling: string;
+
+    @IsString()
+    @MinLength(2)
+    @MaxLength(9)
+    documentTypeBilling: string;
+
+    @IsString()
+    @MinLength(8)
+    @MaxLength(15)
+    documentBilling: string;
+
+    @IsBoolean()
+    dateBilling: boolean;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(50)
+    @IsOptional()
+    firstNameShipping: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(50)
+    @IsOptional()
+    lastNameShipping: string;
+
+    @IsString()
+    @MinLength(6)
+    @MaxLength(50)
+    @IsOptional()
+    emailShipping: string;
+
+    @IsString()
+    @MinLength(7)
+    @MaxLength(16)
+    @IsOptional()
+    phoneNumberShipping: string;
+
+    @IsString()
+    @MinLength(5)
+    @MaxLength(40)
+    @IsOptional()
+    streetShipping: string;
+
+    @IsString()
+    @MinLength(5)
+    @MaxLength(10)
+    @IsOptional()
+    postalCodeShipping: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(40)
+    @IsOptional()
+    cityShipping: string;
+
+    @IsString()
+    @MinLength(3)
+    @MaxLength(40)
+    @IsOptional()
+    stateShipping: string;
+
+    @IsString()
+    @MinLength(2)
+    @MaxLength(2)
+    @IsOptional()
+    countryShipping: string;
+
+    @IsString()
+    @MinLength(2)
+    @MaxLength(9)
+    @IsOptional()
+    documentTypeShipping: string;
+
+    @IsString()
+    @MinLength(8)
+    @MaxLength(15)
+    @IsOptional()
+    documentShipping: string;
 }

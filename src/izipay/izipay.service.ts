@@ -7,10 +7,12 @@ import { Repository } from 'typeorm';
 import { LoginIzipay } from './entities/izipay.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { generateOrder } from 'src/common/utils/generate-order';
 
 @Injectable()
 export class IzipayService {
-    private readonly baseUrl = process.env.IZI_URL_TEST;
+    private readonly URL = process.env.MODE === 'TEST' ? process.env.IZI_URL_TEST : process.env.IZI_URL_PROD;
+    private readonly baseUrl = URL;
 
     constructor(
         @InjectRepository(LoginIzipay)
@@ -19,7 +21,6 @@ export class IzipayService {
     ) { }
 
     async tokenGenerate(GenerateToken: GenerateTokenIzipayApiDto, { email }: { email: string }) {
-
         const headers = {
             'Content-type': 'application/json',
             'transactionId': GenerateToken.transactionId,
@@ -28,7 +29,7 @@ export class IzipayService {
         const data = {
             requestSource: GenerateToken.requestSource,
             merchantCode: GenerateToken.merchantCode,
-            orderNumber: GenerateToken.orderNumber,
+            orderNumber: GenerateToken.orderNumber ?? generateOrder.generateOrderNumber(),
             publicKey: GenerateToken.publicKey,
             amount: GenerateToken.amount
         }
@@ -46,6 +47,7 @@ export class IzipayService {
                 publicKey: GenerateToken.publicKey
             }
 
+            const saveData = this.loginIzipayRepository.save(SaveTokenWithuser);
             await this.cacheManager.set('user_data', SaveTokenWithuser);
         }
 
@@ -294,5 +296,9 @@ export class IzipayService {
         const resp = await axiosErrorHandler(axiosPromise);
 
         return resp;
+    }
+
+    async generateLinkPayment(){
+        
     }
 }

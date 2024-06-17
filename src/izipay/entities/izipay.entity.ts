@@ -1,5 +1,5 @@
 import { User } from "src/users/entities/user.entity";
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne } from "typeorm";
 
 
 @Entity()
@@ -13,7 +13,7 @@ export class LoginIzipay {
     @Column()
     merchantCode: string;
 
-    @Column()
+    @Column({ type: "text"})
     token: string;
 
     @ManyToOne(() => User)
@@ -22,6 +22,9 @@ export class LoginIzipay {
 
     @Column()
     userEmail: string;
+
+    @CreateDateColumn()
+    createdAt: Date;
 
     @DeleteDateColumn()
     deletedAt: Date;
